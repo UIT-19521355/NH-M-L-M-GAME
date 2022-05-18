@@ -4,7 +4,7 @@ import random
 from EnemyBullet import EnemyBullet
 
 class Enemy:
-    "This class is used to hold the enemies infos"
+    "This class is used to hold the enemies infos and create enemies"
     GUN_WIDTH, GUN_HEIGHT = 30, 30
     GUN_OFFSET_X, GUN_OFFSET_Y = 15, 15
 
@@ -27,7 +27,26 @@ class Enemy:
 
 
     def __init__(self, pos, size, surface, obstacles, gun_image):
-        '''Fundamental infos'''
+        '''Fundamental infos
+        
+        Input:
+        -----
+        pos:
+            position of the enemy
+        size:
+            size of the enemy
+        surface:
+            the Pygame's window which is the place will display enemies
+        obstacles:
+            the obstacles display on surface
+        gun_image:
+            the gun image
+        
+        Output:
+        ------
+        The enemy with gun attach to it
+
+        '''
         self.main_surface = surface
         self.surface = surface
         self.rect = pygame.Rect(pos, size)
@@ -48,7 +67,17 @@ class Enemy:
         self.shoot_particle_colors = [(255, 0, 0), (255, 215,0), (255, 69, 0)]
 
     def handle_collisions(self, player_rect):
-        '''Use this function to handle the collision'''
+        '''Use this function to handle the collision
+        
+        Input:
+        -----
+        player_rect:
+            the player
+        
+        Output:
+        ------
+        the bullet will disappear after touching the obstacle 
+        '''
         # COLLISIONS ON OBSTACLES
         for obstacle in self.obstacles:
             if self.rect.colliderect(obstacle):
@@ -63,7 +92,15 @@ class Enemy:
 
     def update_move_rot(self, player_rect):
         '''This function is used to make Player's shoot direction follow mouse's direction
-        And also the movement of player'''
+        And also calculated the movement of the player
+        
+        Input:
+        player_rect:
+            the player
+
+        Output:
+        The player will be attached with a gun. The gun moving , rotate same as player
+        '''
         self.previous_pos_x = self.x
         self.previous_pos_y = self.y
 
@@ -99,7 +136,15 @@ class Enemy:
             self.rotated_rect = self.surface.get_rect(center = self.rect.center)
 
     def update_gun(self, player_rect):
-        '''This function is used to update the shooting'''
+        '''This function is used to update the shooting
+        
+        Input:
+        player_rect:
+            The player
+        
+        Output:
+        the bullet will come out at the coordinate of the gun and also it has deplay for each shoot
+        '''
         if self.time_before_shoot <= 0:
             # SHOOT
             shoot_dir_x, shoot_dir_y = player_rect.centerx - self.gun_rotated_rect.x, self.gun_rotated_rect.y - player_rect.centery
@@ -112,7 +157,23 @@ class Enemy:
             self.time_before_shoot -= 0.017
     
     def update_bullets(self, obstacles, WIDTH, HEIGHT, player_rect):
-        '''This function is used to make the bullets disappear after collision'''
+        '''This function is used to make the bullet disappear after a collision
+        
+        Input:
+        -----
+        obstacles:
+            the obstacle display on the pygame's screen
+        WIDTH:
+            the width of the pygame's screen
+        HEIGHT:
+            the height of the Pygame's screen
+        player_rect:
+            the player
+        
+        Output:
+        ------
+        After a collision with obstacle , it disappear
+        '''
         bullet_to_remove = 0
 
         for bullet in self.bullets:
@@ -132,7 +193,17 @@ class Enemy:
     
     
     def take_damage(self, damage):
-        '''This function is used to calculated the damage'''
+        '''This function is used to calculated the damage
+        
+        Input:
+        -----
+        damage:
+            the damage receive from player or player receive damage from enemy
+        
+        Output:
+        ------
+        Player's Health decrease or enemies's health decrease
+        '''
         self.health -= damage
         return self.health
 

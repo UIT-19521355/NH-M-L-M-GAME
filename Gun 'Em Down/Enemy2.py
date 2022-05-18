@@ -2,6 +2,7 @@ import pygame
 from Enemy import Enemy
 
 class Enemy2(Enemy):
+    '''This class inherited from Enemy class'''
     GUN_WIDTH, GUN_HEIGHT = 25, 25
     GUN_OFFSET_X, GUN_OFFSET_Y = 12, 12
 

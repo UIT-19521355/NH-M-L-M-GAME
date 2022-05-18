@@ -111,6 +111,7 @@ ENEMY_DIE_SOUND = MIXER.Sound(os.path.join("PygameProject", "Assets", "Enemy_Die
 WAVE_UP_SOUND = MIXER.Sound(os.path.join("PygameProject", "Assets", "Wave_Up.wav"))
 PICK_UP_POWERUP_SOUND = MIXER.Sound(os.path.join("PygameProject", "Assets", "Pick_Up_Powerup.wav"))
 
+MUSIC = MIXER.music.load(os.path.join("PygameProject", "Assets", "Karl Casey (White Bat Audio) - Identity.mp3"))
 
 # Obstacles
 obstacles = []
@@ -123,7 +124,41 @@ obstacles.append(pygame.Rect(80, 400, 40, 40))
 obstacles.append(pygame.Rect(330, 250, 40, 40))
 
 def draw_window(color, player_sprite, player_rot, bullets, gun_sprite, gun_rot, enemies, wave, health_rect, current_health_rect, powerups, shield_rect, current_shield_rect):
-    '''Use this function to draw everything on the screen'''
+    '''Use this function to draw everything on the screen
+    
+    Input:
+    -----
+    color:
+        background color
+    player_sprite:
+        the player
+    player_rot:
+        the player's movement
+    bullets:
+        The player's bullets and enemy's bullets
+    gun_sprite:
+        the gun which attach to player and enemy 
+    gun_rot:
+        the movement of the gun
+    enemies:
+        the enemy
+    wave:
+        Show which wave the player is battling
+    health_rect:
+        Hp bar
+    current_health_rect:
+        which will show how many Hp you have left
+    powerup:
+        the powerup will drop with low rate
+    Shield_rect:
+        Shield bar
+    current_shield_rect:
+        which will show how many shield you can take left
+    
+    Output:
+    ------
+    Display the player , enemies , shield bar , hp bar , ...
+    '''
     global play_again_button
     global game_over_panel
     global game_over_text
@@ -229,7 +264,20 @@ def handle_player_movement(keys_pressed, player, x, y):
 
 def take_damage(damage, player_health):
     '''This function is used to calculated the damage player received.
-    If the shield still available, Shield take damage, Player'HP still OK
+
+    Input:
+    -----
+    damage:
+        the damage from enemies
+    player_health:
+        the current health of the player
+    player_shield:
+        the current shield of the player
+    player armor:
+        the armor of the player
+    Output:
+    ------
+    If the shield still available, Shield take damage, Player's health still OK
     If the shield gone, Player'HP will be decreased
     If HP below 0, GameOver'''
 
@@ -254,7 +302,40 @@ def take_damage(damage, player_health):
 
 
 def new_wave():
-    '''This function is used to add specific enemies when player has reached to specific wave '''
+    '''This function is used to add specific enemies when player has reached to specific wave
+    
+    Input:
+    -----
+    wave:
+        the current wave
+    amount_of_enemies:
+        the amount of enemies need to kill in a wave
+    enemy_spawn_rate_min:
+        min spawn rate of the enemy
+    enemy_spawn_rate_max:
+        max spawn rate of the enemy
+    enemies_killed_wave:
+        enemies have been killed in current wave
+    enemies_spawned_wave:
+        enemies have spawn in current wave
+    next_wave:
+        pause the game to choose Damage increase or armor increase
+    Damage_Buff_button:
+        the button after clicking , player's damage increase
+    Armor_Buff_button:
+        the button after clicking , player's armor increase
+    enemies:
+        list of the enemy
+    key:
+        Use this variable to open function spawn boss after 10 waves
+    lock:
+        Use this variavble to open function increase enemies health after boss was defeated
+
+    Output:
+    Spawn enemies with rate , when go to next wave 
+    Two button will appear , game will pause , choose one and go to next wave
+
+    '''
     global amount_of_enemies
     global enemy_spawn_rate_min
     global enemy_spawn_rate_max
@@ -296,8 +377,18 @@ def new_wave():
     
 
 def handle_player_bullets(player_bullets):   
-    '''This function is used to handle player bullet. 
-    And make enemies disappear after destroyed''' 
+    '''This function is used to make bullet disappear after a collision with enemies , obstacle
+    Enemy disappear if its health below 0 , and powerup will appear with the percentage
+    
+    Input:
+    -----
+    player_bullet:
+        player's bullet
+    
+    Output:
+    -----
+    When enemy die , powerup will appear with the low percentage 
+    ''' 
     # Update Bullets
     bullet_to_remove = 0
     global enemies_killed_wave
@@ -352,7 +443,20 @@ def handle_player_bullets(player_bullets):
 
 
 def handle_powerups(powerups, player):
-    '''This function is used to handle powerups.'''
+    '''This function is used to handle powerup. Take speed powerup, speed increase, take shooting's rate powerup,
+    shooting's rate increase,...
+    
+    Input:
+    -----
+    powerups:
+        the list of powerups
+    player
+        the player
+    
+    Output:
+    ------
+    player's speed increase or player's health increase,...after that powerup_rect will disappear
+    '''
     global player_health
     global run_speed
     global bullet_fire_rate
@@ -388,7 +492,22 @@ def handle_powerups(powerups, player):
 
 
 def game_over():
-    '''Making the Gameover panel appear.'''
+    '''Making the Gameover panel appear.
+    
+    Input:
+    -----
+    game_is_over:
+        check if you had losed
+    score_text:
+        show your score
+    enemies_killed_text:
+        how many enemies you had killed
+    
+    Output:
+    ------
+    End game and show GameOver panel
+
+    '''
     pygame.display.set_caption("YOU ARE DEAD")
     PLAYER_DIE_SOUND.play()
     MIXER.music.stop()
@@ -499,7 +618,7 @@ def main():
     global powerups
     powerups = []
 
-
+    MIXER.music.play(-1)
  
     while run:
         if next_wave:
