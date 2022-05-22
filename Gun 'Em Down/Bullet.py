@@ -32,13 +32,13 @@ class Bullet:
         self.rect = pygame.Rect(pos, size)
     
     def update(self):
-        '''Update to the screen with the calculated coordinate and speed for each frame
+        '''Update calculated coordinate before displaying on the screen
         
-        Input
+        Input:
         -----
         None
 
-        Output
+        Output:
         ------
         New coordinate for each frame make bullet like moving
         '''

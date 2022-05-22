@@ -66,8 +66,7 @@ ENEMY4_IMAGE = pygame.image.load(os.path.join("PygameProject", "Assets", "Enemy4
 ENEMY4 = pygame.transform.scale(ENEMY4_IMAGE, (ENEMY4_WIDTH, ENEMY4_HEIGHT)) # SCALED AND ROTATED
 
 
-
-
+#POWERUPS
 LIFE_POWERUP_IMAGE = pygame.image.load(os.path.join("PygameProject", "Assets", "LifePowerUp.png"))
 LIFE_POWERUP = pygame.transform.scale(LIFE_POWERUP_IMAGE, (POWERUP_WIDTH + 5, POWERUP_HEIGHT + 5))
 LIFE_POWERUP_INCREASE = 10
@@ -145,7 +144,7 @@ def draw_window(color, player_sprite, player_rot, bullets, gun_sprite, gun_rot, 
     wave:
         Show which wave the player is battling
     health_rect:
-        Hp bar
+        Health bar
     current_health_rect:
         which will show how many Hp you have left
     powerup:
@@ -154,7 +153,25 @@ def draw_window(color, player_sprite, player_rot, bullets, gun_sprite, gun_rot, 
         Shield bar
     current_shield_rect:
         which will show how many shield you can take left
-    
+    play_again_button:
+        The play again button
+    game_over_panel:
+        The panel which will appear when you lose
+    game_over_text:
+        Text show how many enemies you had killed, which wave you had reached,...
+    player_damage:
+        Use this to increase player's damage when the player click on "ATK UP" button
+    player_armor:
+        Use this to increase player's damage when the player click on "ARMOR UP" button
+    next_wave:
+        Use this parameter like a lock, pause a game's loop when "ATK UP" and "ARMOR UP" button appear 
+        when finished the previous wave
+    Damage_Buff_button:
+        Increase player's damage when the player click on "ATK UP" button 
+    Armor_Buff_button:
+        Increase player's damage when the player click on "ARMOR UP" button 
+
+
     Output:
     ------
     Display the player , enemies , shield bar , hp bar , ...
@@ -167,7 +184,6 @@ def draw_window(color, player_sprite, player_rot, bullets, gun_sprite, gun_rot, 
     global next_wave
     global Damage_Buff_button
     global Armor_Buff_button
-    global rand
     
     WIN.fill(color)
 
@@ -236,6 +252,23 @@ def draw_window(color, player_sprite, player_rot, bullets, gun_sprite, gun_rot, 
 
 
 def handle_player_movement(keys_pressed, player, x, y):
+    '''This function will handle player's movement
+    
+    Input:
+    -----
+    key_pressed:
+        Take which key did the player press
+    player:
+        the player
+    x:
+        position on x axis
+    y:
+        postion on y axis
+    
+    Output:
+    ------
+    The movement of the player after pressing on keyboard
+    '''
     previous_pos_x = x
     previous_pos_y = y
 
@@ -250,7 +283,8 @@ def handle_player_movement(keys_pressed, player, x, y):
 
     player.x = x
     player.y = y
-    
+
+    #This loop is used for debug if player get stuck on the wall 
     for obstacle in obstacles:
         if player.colliderect(obstacle):
             if math.isclose(obstacle.right, player.left, abs_tol=3) or math.isclose(obstacle.left, player.right, abs_tol=3):
@@ -273,7 +307,7 @@ def take_damage(damage, player_health):
         the current health of the player
     player_shield:
         the current shield of the player
-    player armor:
+    player_armor:
         the armor of the player
     Output:
     ------
@@ -327,13 +361,13 @@ def new_wave():
     enemies:
         list of the enemy
     key:
-        Use this variable to open function spawn boss after 10 waves
+        Use this parameter to open function which spawn boss after 10 waves
     lock:
-        Use this variavble to open function increase enemies health after boss was defeated
+        Use this parameter to open function which increase enemies health after boss was defeated
 
     Output:
-    Spawn enemies with rate , when go to next wave 
-    Two button will appear , game will pause , choose one and go to next wave
+    Spawn enemies with rate, when go to next wave 
+    Two button will appear, game will pause, choose one and go to next wave
 
     '''
     global amount_of_enemies
@@ -347,7 +381,6 @@ def new_wave():
     global Damage_Buff_button
     global Armor_Buff_button
     global enemies
-    global rand
     global key
     global lock
     WAVE_UP_SOUND.play()
@@ -363,9 +396,7 @@ def new_wave():
     if wave > 5:
         enemy_rarity_chance.append(2)
         enemy_rarity_chance.append(2)
-    #rand=True
     
-
     enemies_killed_wave = 0
     enemies_spawned_wave = 0
     amount_of_enemies += enemy_spawn_increase
@@ -384,10 +415,17 @@ def handle_player_bullets(player_bullets):
     -----
     player_bullet:
         player's bullet
+    enemies_killed_wave:
+        Count how many enemies you has killed in a single wave
+    enemies_killed:
+        Count how many enemies you has killed through all wave
+    next_wave:
+        Go to the next wave
     
     Output:
     -----
-    When enemy die , powerup will appear with the low percentage 
+    When enemy die , powerup will appear with the low percentage,
+    if killed enemies in a wave equal to amount of enemies you need to killed in that wave, you go to next wave
     ''' 
     # Update Bullets
     bullet_to_remove = 0
@@ -450,8 +488,20 @@ def handle_powerups(powerups, player):
     -----
     powerups:
         the list of powerups
-    player
+    player:
         the player
+    player_health:
+        the player's health
+    run_speed:
+        the player's run speed
+    bullet_fire_rate:
+        the gun's bullet fire rate
+    player_shield:
+        the player's shield 
+    current_shield_rect:
+        the player's shield which can increase and decrease
+    current_health_rect:
+        the player's health which can increase and decrease
     
     Output:
     ------
@@ -502,6 +552,8 @@ def game_over():
         show your score
     enemies_killed_text:
         how many enemies you had killed
+    wave:
+        the wave
     
     Output:
     ------
@@ -522,6 +574,7 @@ def game_over():
 
 
 def main():
+    '''The main function will operate the pygame'''
     pygame.display.set_caption("DUNGEON")
     clock = pygame.time.Clock()
     run = True
@@ -619,7 +672,8 @@ def main():
     powerups = []
 
     MIXER.music.play(-1)
- 
+    
+    #GAME's LOOP
     while run:
         if next_wave:
             Damage_Buff_button.draw(WIN,True)

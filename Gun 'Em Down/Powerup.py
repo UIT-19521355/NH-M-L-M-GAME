@@ -38,7 +38,7 @@ class Powerup:
         self.y = self.rect.y
 
     def update(self):
-        '''Update to the screen'''
+        '''Update the infos before displaying on the screen'''
         self.sin += 0.017
         self.y += math.sin(self.sin * self.sin_frequency) * self.sin_amplitude
         self.rect.y = self.y

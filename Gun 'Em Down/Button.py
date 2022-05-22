@@ -18,7 +18,7 @@ class Button():
         height:
             set the height of the button
         text:
-            Write some text on button 
+            some text on button 
         
         Output
         ------
